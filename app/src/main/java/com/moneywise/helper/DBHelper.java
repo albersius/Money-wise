@@ -24,7 +24,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 Constant.TABLE_NAME_USER +
                 " (" +
                 "id INTEGER PRIMARY KEY, " +
-                "email VARCHAR(255) NOT NULL, " +
+                "email VARCHAR(255) NOT NULL UNIQUE, " +
                 "password VARCHAR(50) NOT NULL, " +
                 "createdAt DATE DEFAULT CURRENT_DATE" +
                 ")";

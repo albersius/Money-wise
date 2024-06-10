@@ -1,6 +1,8 @@
 package com.moneywise.activity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
@@ -55,13 +57,24 @@ public class LoginActivity extends AppCompatActivity {
 
         btnLogin.setOnClickListener(view -> {
             try {
+                String email = etEmail.getText().toString();
+                String password = etPassword.getText().toString();
+
                 UserModel user = userRepository.getByEmailPassword(
-                        etEmail.getText().toString(),
-                        etPassword.getText().toString()
+                        email,
+                        password
                 );
 
                 if (user != null) {
                     Toast.makeText(this, "Login Success", Toast.LENGTH_SHORT).show();
+
+                    // save info
+                    SharedPreferences sharedPref = getSharedPreferences(Constant.SHARED_PREF_NAME, MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPref.edit();
+                    editor.putInt(Constant.ID_USER_KEY, user.getId());
+                    editor.apply();
+
+                    // start activity
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(intent);
                     finish();

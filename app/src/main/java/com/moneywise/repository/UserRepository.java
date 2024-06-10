@@ -19,6 +19,21 @@ public class UserRepository extends DBHelper implements IUserRepository {
     }
 
     @Override
+    public boolean isExistByEmail(String email) {
+        String selectStatement = "SELECT * FROM " +
+                Constant.TABLE_NAME_USER + " WHERE email = '" + email + "'";
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery(selectStatement, null);
+
+        boolean exist = cursor.moveToFirst();
+
+        cursor.close();
+
+        return exist;
+    }
+
+    @Override
     public UserModel getByEmailPassword(String email, String password) throws Exception {
         UserModel model;
         String selectStatement = "SELECT * FROM " +

@@ -92,6 +92,9 @@ public class SignUpActivity extends AppCompatActivity {
                 if (success) {
                     Toast.makeText(this, "Success create account!", Toast.LENGTH_SHORT).show();
                 } else {
+                    if (userRepository.isExistByEmail(email)) {
+                        Toast.makeText(this, "Account with this email already exist!", Toast.LENGTH_SHORT).show();
+                    }
                     Toast.makeText(this, "Fail to create account!", Toast.LENGTH_SHORT).show();
                 }
             } catch (Exception e) {
