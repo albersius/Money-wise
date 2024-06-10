@@ -33,17 +33,22 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        replaceFragment(new TransactionFragment());
+        TransactionFragment transactionFragment = new TransactionFragment();
+        StatFragment statFragment = new StatFragment();
+        AccountFragment accountFragment = new AccountFragment();
+        MoreFragment moreFragment = new MoreFragment();
+
+        replaceFragment(transactionFragment);
 
         binding.bottomNavigationView.setOnItemSelectedListener(menuItem -> {
             if (menuItem.getItemId() == R.id.transaction) {
-                replaceFragment(new TransactionFragment());
+                replaceFragment(transactionFragment);
             } else if (menuItem.getItemId() == R.id.stats) {
-                replaceFragment(new StatFragment());
+                replaceFragment(statFragment);
             } else if (menuItem.getItemId() == R.id.accounts) {
-                replaceFragment(new AccountFragment());
+                replaceFragment(accountFragment);
             } else if (menuItem.getItemId() == R.id.more) {
-                replaceFragment(new MoreFragment());
+                replaceFragment(moreFragment);
             }
 
             return true;
