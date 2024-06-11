@@ -20,13 +20,61 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+        // create user table
         String createTableStatement = "CREATE TABLE " +
                 Constant.TABLE_NAME_USER +
                 " (" +
-                "id INTEGER PRIMARY KEY, " +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "email VARCHAR(255) NOT NULL UNIQUE, " +
                 "password VARCHAR(50) NOT NULL, " +
                 "createdAt DATE DEFAULT CURRENT_DATE" +
+                ")";
+
+        db.execSQL(createTableStatement);
+
+        // create bank table
+        createTableStatement = "CREATE TABLE " +
+                Constant.TABLE_NAME_BANK +
+                " (" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "name TEXT NOT NULL " +
+                ")";
+
+        db.execSQL(createTableStatement);
+
+        // create bank_balance table
+        createTableStatement = "CREATE TABLE " +
+                Constant.TABLE_NAME_BANK_BALANCE +
+                " (" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "user_id INT NOT NULL, " +
+                "bank_id INT NOT NULL, " +
+                "balance REAL NOT NULL DEFAULT 0, " +
+                "createdAt DATE DEFAULT CURRENT_DATE," +
+                "updatedAt DATE," +
+                "FOREIGN KEY(user_id) REFERENCES " + Constant.TABLE_NAME_USER + "(id) " +
+                "ON UPDATE CASCADE ON DELETE CASCADE, " +
+                "FOREIGN KEY(bank_id) REFERENCES " + Constant.TABLE_NAME_BANK + "(id)" +
+                "ON UPDATE CASCADE ON DELETE CASCADE " +
+                ")";
+
+        db.execSQL(createTableStatement);
+
+        // create transaction table
+        createTableStatement = "CREATE TABLE " +
+                Constant.TABLE_NAME_TRANSACTION +
+                " (" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "label VARCHAR(255) NOT NULL, " +
+                "amount REAL NOT NULL DEFAULT 0, " +
+                "description TEXT, " +
+                "createdAt DATE DEFAULT CURRENT_DATE," +
+                "user_id INT NOT NULL, " +
+                "bank_id INT NOT NULL, " +
+                "FOREIGN KEY(user_id) REFERENCES " + Constant.TABLE_NAME_USER + "(id) " +
+                "ON UPDATE CASCADE ON DELETE CASCADE, " +
+                "FOREIGN KEY(bank_id) REFERENCES " + Constant.TABLE_NAME_BANK + "(id)" +
+                "ON UPDATE CASCADE ON DELETE CASCADE " +
                 ")";
 
         db.execSQL(createTableStatement);

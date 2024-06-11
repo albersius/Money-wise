@@ -46,9 +46,7 @@ public class UserRepository extends DBHelper implements IUserRepository {
         if(cursor.moveToFirst()) {
             int selectedId = cursor.getInt(0);
             String selectedEmail = cursor.getString(1);
-            String selectedPassword = cursor.getString(2);
-            Date selectedDateTime = Date.valueOf(cursor.getString(3));
-            model = new UserModel(selectedId, selectedEmail, selectedPassword, selectedDateTime);
+            model = new UserModel(selectedId, selectedEmail);
         } else {
             model = null;
         }

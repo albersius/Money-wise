@@ -11,8 +11,6 @@ import java.util.Date;
 public class UserModel implements Parcelable, Serializable {
     private final int id;
     private final String email;
-    private final String password;
-    private Date createdAt;
 
     public int getId() {
         return id;
@@ -22,25 +20,14 @@ public class UserModel implements Parcelable, Serializable {
         return email;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-
-    public UserModel(int id, String email, String password, Date createdAt) {
+    public UserModel(int id, String email) {
         this.id = id;
         this.email = email;
-        this.password = password;
-        this.createdAt = createdAt;
     }
 
     protected UserModel(Parcel in) {
         id = in.readInt();
         email = in.readString();
-        password = in.readString();
     }
 
     public static final Creator<UserModel> CREATOR = new Creator<UserModel>() {
@@ -64,6 +51,5 @@ public class UserModel implements Parcelable, Serializable {
     public void writeToParcel(@NonNull Parcel parcel, int i) {
         parcel.writeInt(id);
         parcel.writeString(email);
-        parcel.writeString(password);
     }
 }
