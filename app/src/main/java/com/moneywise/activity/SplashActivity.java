@@ -1,18 +1,14 @@
 package com.moneywise.activity;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.moneywise.R;
-import com.moneywise.constant.Constant;
 import com.moneywise.util.Util;
 
 @SuppressLint("CustomSplashScreen")

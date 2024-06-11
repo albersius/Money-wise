@@ -15,5 +15,4 @@ public interface IBankRepository {
     BankModel getByName(String name);
     boolean create(String name);
     boolean updateBalance(BankBalanceModel balanceModel);
-    boolean delete(int bankId);
 }

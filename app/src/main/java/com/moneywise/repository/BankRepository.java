@@ -12,7 +12,6 @@ import com.moneywise.helper.DBHelper;
 import com.moneywise.model.BankBalanceModel;
 import com.moneywise.model.BankModel;
 
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -231,11 +230,4 @@ public class BankRepository extends DBHelper implements IBankRepository {
         return success != 0;
     }
 
-    @Override
-    public boolean delete(int bankId) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        int success = db.delete(Constant.TABLE_NAME_BANK, "id = " + bankId, null);
-        db.close();
-        return success != 0;
-    }
 }

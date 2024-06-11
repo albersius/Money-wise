@@ -6,7 +6,6 @@ import android.os.Parcelable;
 import androidx.annotation.NonNull;
 
 import java.io.Serializable;
-import java.util.Date;
 
 public class UserModel implements Parcelable, Serializable {
     private final int id;

@@ -23,7 +23,8 @@
             android:src="@drawable/moneywise"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:contentDescription="TODO" />
 
         <LinearLayout
             android:id="@+id/linearLayout"
@@ -42,7 +43,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:src="@drawable/baseline_arrow_back_24"
-                android:layout_weight="1"/>
+                android:layout_weight="1"
+                android:contentDescription="TODO" />
 
             <TextView
                 android:id="@+id/textView"

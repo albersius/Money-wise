@@ -1,5 +1,6 @@
 package com.moneywise.activity;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,11 +20,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.moneywise.R;
-import com.moneywise.activity.transaction.DailyFragment;
-import com.moneywise.activity.transaction.MonthlyFragment;
-import com.moneywise.activity.transaction.NoteFragment;
 import com.moneywise.adapter.AccountRVAdapter;
-import com.moneywise.adapter.TransactionVPAdapter;
 import com.moneywise.constant.Constant;
 import com.moneywise.model.BankBalanceModel;
 import com.moneywise.repository.BankRepository;
@@ -65,6 +62,7 @@ public class AccountFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_account, container, false);
     }
 
+    @SuppressLint("DefaultLocale")
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);

@@ -14,9 +14,7 @@ import com.moneywise.model.MonthlyTransactionModel;
 import com.moneywise.model.TransactionModel;
 import com.moneywise.model.UserModel;
 
-import java.text.ParseException;
 import java.sql.Date;
-import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,46 +23,6 @@ public class TransactionRepository extends DBHelper implements ITransactionRepos
 
     public TransactionRepository(@Nullable Context context, @Nullable String name, @Nullable SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);
-    }
-
-    @Override
-    public TransactionModel getById(int userId, int transactionId)  {
-        TransactionModel transactionModel;
-
-        String selectStatement = "SELECT " +
-                "    t.id AS transaction_id," +
-                "    t.label AS transaction_label," +
-                "    t.amount AS transaction_amount," +
-                "    t.description AS transaction_description," +
-                "    t.createdAt AS transaction_created_at," +
-                "    u.id AS user_id," +
-                "    u.email AS user_email," +
-                "    u.createdAt AS user_created_at," +
-                "    b.id AS bank_id," +
-                "    b.name AS bank_name " +
-                "FROM " +
-                "    transactions t " +
-                "JOIN " +
-                "    users u ON t.user_id = u.id " +
-                "JOIN " +
-                "    banks b ON t.bank_id = b.id " +
-                "WHERE " +
-                "    t.id = " + transactionId;
-
-        SQLiteDatabase db = this.getReadableDatabase();
-
-        Cursor cursor = db.rawQuery(selectStatement, null);
-
-        if(cursor.moveToFirst()) {
-            transactionModel = newTModelFromCursor(cursor);
-        } else {
-            cursor.close();
-            transactionModel = null;
-        }
-
-        cursor.close();
-
-        return transactionModel;
     }
 
     @Override
@@ -181,44 +139,6 @@ public class TransactionRepository extends DBHelper implements ITransactionRepos
     }
 
     @Override
-    public List<TransactionModel> getByDateRange(int userId, Date start, Date end) throws ParseException {
-        List<TransactionModel> models = new ArrayList<>();
-
-        String selectStatement = "SELECT \n" +
-                "    t.id AS transaction_id,\n" +
-                "    t.label AS transaction_label,\n" +
-                "    t.amount AS transaction_amount,\n" +
-                "    t.description AS transaction_description,\n" +
-                "    t.createdAt AS transaction_created_at,\n" +
-                "    u.id AS user_id,\n" +
-                "    u.email AS user_email,\n" +
-                "    u.createdAt AS user_created_at,\n" +
-                "    b.id AS bank_id,\n" +
-                "    b.name AS bank_name\n" +
-                "FROM \n" +
-                "    transactions t\n" +
-                "JOIN \n" +
-                "    users u ON t.user_id = u.id\n" +
-                "JOIN \n" +
-                "    banks b ON t.bank_id = b.id\n" +
-                "WHERE \n" +
-                "    t.createdAt >= " + start.toString() +
-                " AND t.createdAt <= " + end.toString();
-
-        SQLiteDatabase db = this.getReadableDatabase();
-
-        Cursor cursor = db.rawQuery(selectStatement, new String[]{start.toString(), end.toString()});
-        if (cursor.moveToFirst()) {
-            do {
-                models.add(newTModelFromCursor(cursor));
-            } while (cursor.moveToNext());
-        }
-
-        cursor.close();
-        return models;
-    }
-
-    @Override
     public boolean create(int userId, String label, double amount, String description, int bankId) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
@@ -230,25 +150,6 @@ public class TransactionRepository extends DBHelper implements ITransactionRepos
 
         long success = db.insert(Constant.TABLE_NAME_TRANSACTION, null, cv);
         return success != -1;
-    }
-
-    @Override
-    public void update(int userId, TransactionModel model) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues cv = new ContentValues();
-        cv.put("label", model.getLabel());
-        cv.put("amount", model.getAmount());
-        cv.put("description", model.getDescription());
-        cv.put("user_id", model.getUser().getId());
-        cv.put("bank_id", model.getBank().getId());
-
-        db.update(Constant.TABLE_NAME_TRANSACTION, cv, "user_id = " + model.getId(), null);
-    }
-
-    @Override
-    public void delete(int userId, int id) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(Constant.TABLE_NAME_TRANSACTION, "user_id = " + id, null);
     }
 
     @Override
@@ -297,26 +198,6 @@ public class TransactionRepository extends DBHelper implements ITransactionRepos
     }
 
     @Override
-    public double getBalanceByBankId(int userId, int bankId) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        String selectQuery = "SELECT SUM(amount) AS balance " +
-                "FROM " + Constant.TABLE_NAME_TRANSACTION + " " +
-                "WHERE user_id = " + userId + " AND bank_id = " + bankId;
-        Cursor cursor = db.rawQuery(selectQuery, null);
-
-        double balance;
-        if (cursor.moveToFirst()) {
-            balance = cursor.getDouble(0);
-        } else {
-            balance = 0;
-        }
-
-        cursor.close();
-
-        return balance;
-    }
-
-    @Override
     public double getIncome(int userId) {
         SQLiteDatabase db = this.getReadableDatabase();
         String selectQuery = "SELECT SUM(amount) AS balance " +
@@ -337,77 +218,11 @@ public class TransactionRepository extends DBHelper implements ITransactionRepos
     }
 
     @Override
-    public double getIncomeByBankId(int userId, int bankId) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        String selectQuery = "SELECT SUM(amount) AS balance " +
-                "FROM " + Constant.TABLE_NAME_TRANSACTION + " " +
-                "WHERE user_id = " + userId +
-                "   AND label = '" + Constant.LABEL_INCOME + "' " +
-                "   AND bank_id = " + bankId;
-        Cursor cursor = db.rawQuery(selectQuery, null);
-
-        double balance;
-        if (cursor.moveToFirst()) {
-            balance = cursor.getDouble(0);
-        } else {
-            balance = 0;
-        }
-
-        cursor.close();
-
-        return balance;
-    }
-
-    @Override
     public double getExpense(int userId) {
         SQLiteDatabase db = this.getReadableDatabase();
         String selectQuery = "SELECT SUM(amount) AS balance " +
                 "FROM " + Constant.TABLE_NAME_TRANSACTION + " " +
                 "WHERE user_id = " + userId + " AND label = '" + Constant.LABEL_EXPENSE + "'";
-        Cursor cursor = db.rawQuery(selectQuery, null);
-
-        double balance;
-        if (cursor.moveToFirst()) {
-            balance = cursor.getDouble(0);
-        } else {
-            balance = 0;
-        }
-
-        cursor.close();
-
-        return balance;
-    }
-
-    @Override
-    public double getExpenseByBankId(int userId, int bankId) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        String selectQuery = "SELECT SUM(amount) AS balance " +
-                "FROM " + Constant.TABLE_NAME_TRANSACTION + " " +
-                "WHERE user_id = " + userId +
-                "   AND label = '" + Constant.LABEL_EXPENSE + "'" +
-                "   AND bank_id = " + bankId;
-        Cursor cursor = db.rawQuery(selectQuery, null);
-
-        double balance;
-        if (cursor.moveToFirst()) {
-            balance = cursor.getDouble(0);
-        } else {
-            balance = 0;
-        }
-
-        cursor.close();
-
-        return balance;
-    }
-
-    @Override
-    public double getExpenseByDate(int userId, Date date) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        String selectQuery = "SELECT SUM(amount) AS balance " +
-                "FROM " + Constant.TABLE_NAME_TRANSACTION + " " +
-                "WHERE user_id = " + userId +
-                "   AND label = '" + Constant.LABEL_EXPENSE + "'" +
-                "   AND createdAt = " + date.toString();
         Cursor cursor = db.rawQuery(selectQuery, null);
 
         double balance;

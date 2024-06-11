@@ -7,20 +7,15 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
-import com.moneywise.R;
-import com.moneywise.activity.transaction.CalendarFragment;
 import com.moneywise.activity.transaction.DailyFragment;
 import com.moneywise.activity.transaction.MonthlyFragment;
 import com.moneywise.activity.transaction.NoteFragment;
-import com.moneywise.activity.transaction.TotalFragment;
 import com.moneywise.adapter.TransactionVPAdapter;
 import com.moneywise.databinding.FragmentTransactionBinding;
 

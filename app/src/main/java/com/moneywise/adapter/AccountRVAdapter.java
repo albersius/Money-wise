@@ -7,14 +7,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.moneywise.R;
-import com.moneywise.constant.Constant;
 import com.moneywise.model.BankBalanceModel;
 
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class AccountRVAdapter extends

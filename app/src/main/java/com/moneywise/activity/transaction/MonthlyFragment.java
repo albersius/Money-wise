@@ -20,7 +20,6 @@ import com.moneywise.R;
 import com.moneywise.adapter.TransactionMonthlyRVAdapter;
 import com.moneywise.constant.Constant;
 import com.moneywise.model.MonthlyTransactionModel;
-import com.moneywise.model.TransactionModel;
 import com.moneywise.repository.ITransactionRepository;
 import com.moneywise.repository.TransactionRepository;
 import com.moneywise.util.Util;

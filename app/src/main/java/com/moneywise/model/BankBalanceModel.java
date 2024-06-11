@@ -17,10 +17,6 @@ public class BankBalanceModel implements Serializable, Parcelable {
         return id;
     }
 
-    public UserModel getUser() {
-        return user;
-    }
-
     public void subtractBal(double balance) {
         this.balance -= balance;
     }

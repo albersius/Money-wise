@@ -11,8 +11,6 @@ import com.moneywise.constant.Constant;
 import com.moneywise.helper.DBHelper;
 import com.moneywise.model.UserModel;
 
-import java.sql.Date;
-
 public class UserRepository extends DBHelper implements IUserRepository {
     public UserRepository(@Nullable Context context, @Nullable String name, @Nullable SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);
@@ -89,12 +87,4 @@ public class UserRepository extends DBHelper implements IUserRepository {
         return success != -1;
     }
 
-    @Override
-    public boolean update(int id, UserModel model) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues cv = new ContentValues();
-        cv.put("email", model.getEmail());
-        long success = db.update(Constant.TABLE_NAME_USER, cv, "id = " + id, null);
-        return false;
-    }
 }

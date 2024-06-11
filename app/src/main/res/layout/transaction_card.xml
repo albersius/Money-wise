@@ -15,32 +15,34 @@
             android:id="@+id/linearLayout9"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/border_bottom">
+            android:background="@drawable/border_bottom"
+            tools:ignore="MissingConstraints">
 
             <TextView
                 android:id="@+id/txtLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:drawableStart="@drawable/baseline_label_24"
                 android:drawablePadding="8dp"
                 android:text="Income"
                 android:textColor="@color/text_blue"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                android:layout_weight="1"/>
+                android:layout_weight="1"
+                app:drawableStartCompat="@drawable/baseline_label_24"
+                tools:ignore="HardcodedText" />
 
             <TextView
                 android:id="@+id/txtBankName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/border_bottom"
-                android:drawableEnd="@drawable/baseline_attach_money_24"
                 android:drawablePadding="8dp"
                 android:text="BCA"
                 android:textAlignment="textEnd"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                android:layout_weight="1"/>
+                android:layout_weight="1"
+                app:drawableEndCompat="@drawable/baseline_attach_money_24" />
         </LinearLayout>
 
 
