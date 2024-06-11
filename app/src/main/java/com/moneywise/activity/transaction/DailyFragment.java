@@ -97,11 +97,6 @@ public class DailyFragment extends Fragment {
 
     ActivityResultLauncher<Intent> startActivityIntent = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
-            new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult o) {
-                    updateDashboard();
-                }
-            }
+            o -> updateDashboard()
     );
 }

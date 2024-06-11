@@ -106,6 +106,45 @@ public class TransactionRepository extends DBHelper implements ITransactionRepos
     }
 
     @Override
+    public List<TransactionModel> getAllNote(int userId, int limit) {
+        final ArrayList<TransactionModel> transactionModelArrayList = new ArrayList<>();
+
+        String selectStatement = "SELECT " +
+                "    t.id AS transaction_id," +
+                "    t.label AS transaction_label," +
+                "    t.amount AS transaction_amount," +
+                "    t.description AS transaction_description," +
+                "    t.createdAt AS transaction_created_at," +
+                "    u.id AS user_id," +
+                "    u.email AS user_email," +
+                "    u.createdAt AS user_created_at," +
+                "    b.id AS bank_id," +
+                "    b.name AS bank_name " +
+                "FROM " +
+                "    transactions t " +
+                "JOIN " +
+                "    users u ON t.user_id = u.id " +
+                "JOIN " +
+                "    banks b ON t.bank_id = b.id " +
+                "WHERE t.label = '" + Constant.LABEL_NOTE + "' " +
+                "LIMIT " + limit;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery(selectStatement, null);
+
+        if(cursor.moveToFirst()) {
+            do {
+                transactionModelArrayList.add(newTModelFromCursor(cursor));
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+
+        return transactionModelArrayList;
+    }
+
+    @Override
     public List<MonthlyTransactionModel> getMonthlyByYear(int userId, int year) {
         final ArrayList<MonthlyTransactionModel> models = new ArrayList<>();
 
@@ -213,9 +252,34 @@ public class TransactionRepository extends DBHelper implements ITransactionRepos
     }
 
     @Override
+    public double getTotalNote(int userId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String selectQuery = "SELECT " +
+                "SUM(CASE WHEN label = '"+ Constant.LABEL_NOTE +"' THEN amount ELSE 0 END) " +
+                "AS balance " +
+                "FROM " + Constant.TABLE_NAME_TRANSACTION + " " +
+                "WHERE user_id = " + userId;
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        double balance;
+        if (cursor.moveToFirst()) {
+            balance = cursor.getDouble(0);
+        } else {
+            balance = 0;
+        }
+
+        cursor.close();
+
+        return balance;
+    }
+
+    @Override
     public double getBalance(int userId) {
         SQLiteDatabase db = this.getReadableDatabase();
-        String selectQuery = "SELECT SUM(amount) AS balance " +
+        String selectQuery = "SELECT " +
+                "(SUM(CASE WHEN label = '"+ Constant.LABEL_INCOME +"' THEN amount ELSE 0 END) - " +
+                "SUM(CASE WHEN label = '" + Constant.LABEL_EXPENSE + "' THEN amount ELSE 0 END)) " +
+                "AS balance " +
                 "FROM " + Constant.TABLE_NAME_TRANSACTION + " " +
                 "WHERE user_id = " + userId;
         Cursor cursor = db.rawQuery(selectQuery, null);

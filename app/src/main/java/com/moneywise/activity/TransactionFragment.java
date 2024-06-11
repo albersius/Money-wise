@@ -41,7 +41,6 @@ public class TransactionFragment extends Fragment {
 
         TransactionVPAdapter adapter = new TransactionVPAdapter(getParentFragmentManager(), getLifecycle());
         adapter.addFragment(new DailyFragment(), "Daily");
-        adapter.addFragment(new CalendarFragment(), "Calendar");
         adapter.addFragment(new MonthlyFragment(), "Monthly");
         adapter.addFragment(new NoteFragment(), "Note");
         viewPager.setAdapter(adapter);
