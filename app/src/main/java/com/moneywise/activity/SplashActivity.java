@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.moneywise.R;
 import com.moneywise.constant.Constant;
+import com.moneywise.util.Util;
 
 @SuppressLint("CustomSplashScreen")
 public class SplashActivity extends AppCompatActivity {
@@ -26,9 +27,7 @@ public class SplashActivity extends AppCompatActivity {
 
 
         new Handler().postDelayed(() -> {
-            int id = getCurrentUserId();
-
-            Log.i("TOLOL", String.valueOf(id));
+            int id = Util.getCurrentUserId(this);
 
             Intent intent;
 
@@ -41,10 +40,5 @@ public class SplashActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         }, 3000);
-    }
-
-    private int getCurrentUserId() {
-        SharedPreferences sharedPref = getSharedPreferences(Constant.SHARED_PREF_NAME, MODE_PRIVATE);
-        return sharedPref.getInt(Constant.ID_USER_KEY, -1);
     }
 }

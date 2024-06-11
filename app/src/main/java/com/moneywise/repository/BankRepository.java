@@ -35,8 +35,7 @@ public class BankRepository extends DBHelper implements IBankRepository {
         if(cursor.moveToFirst()) {
             bankModel = new BankModel(
                     cursor.getInt(0),
-                    cursor.getString(1),
-                    Date.valueOf(cursor.getString(2))
+                    cursor.getString(1)
             );
         } else {
             bankModel = null;
@@ -64,8 +63,7 @@ public class BankRepository extends DBHelper implements IBankRepository {
             do {
                 bankModel.add(new BankModel(
                         cursor.getInt(0),
-                        cursor.getString(1),
-                        Date.valueOf(cursor.getString(2))
+                        cursor.getString(1)
                 ));
             } while (cursor.moveToNext());
         }
@@ -82,17 +80,16 @@ public class BankRepository extends DBHelper implements IBankRepository {
 
         String selectQuery = "SELECT * " +
                 "FROM " + Constant.TABLE_NAME_BANK + " " +
-                "WHERE name = " + name;
+                "WHERE name = '" + name + "'";
 
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.rawQuery(selectQuery, null);
 
         if(cursor.moveToFirst()) {
-            bankModel =new BankModel(
-                cursor.getInt(0),
-                cursor.getString(1),
-                Date.valueOf(cursor.getString(2))
+            bankModel = new BankModel(
+                    cursor.getInt(0),
+                    cursor.getString(1)
             );
         } else {
             bankModel = null;

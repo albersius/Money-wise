@@ -12,12 +12,10 @@ public class BankModel implements Parcelable, Serializable {
 
     private final int id;
     private String name;
-    private Date createdAt;
 
-    public BankModel(int id, String name, Date createdAt) {
+    public BankModel(int id, String name) {
         this.id = id;
         this.name = name;
-        this.createdAt = createdAt;
     }
 
     protected BankModel(Parcel in) {
@@ -33,9 +31,6 @@ public class BankModel implements Parcelable, Serializable {
         return name;
     }
 
-    public Date getCreatedAt() {
-        return createdAt;
-    }
 
     public static final Creator<BankModel> CREATOR = new Creator<BankModel>() {
         @Override

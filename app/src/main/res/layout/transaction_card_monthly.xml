@@ -15,33 +15,7 @@
             android:id="@+id/linearLayout9"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/border_bottom">
-
-            <TextView
-                android:id="@+id/txtLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:drawableStart="@drawable/baseline_label_24"
-                android:drawablePadding="8dp"
-                android:text="Income"
-                android:textColor="@color/text_blue"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:layout_weight="1"/>
-
-            <TextView
-                android:id="@+id/txtBankName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/border_bottom"
-                android:drawableEnd="@drawable/baseline_attach_money_24"
-                android:drawablePadding="8dp"
-                android:text="BCA"
-                android:textAlignment="textEnd"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:layout_weight="1"/>
-        </LinearLayout>
+            android:background="@drawable/border_bottom"/>
 
 
         <LinearLayout
@@ -64,13 +38,6 @@
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/txtDateRange"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="1.1 ~ 1.31"
-                android:textColor="@color/black"
-                android:textSize="16sp" />
         </LinearLayout>
 
 

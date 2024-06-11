@@ -43,7 +43,6 @@ public class TransactionFragment extends Fragment {
         adapter.addFragment(new DailyFragment(), "Daily");
         adapter.addFragment(new CalendarFragment(), "Calendar");
         adapter.addFragment(new MonthlyFragment(), "Monthly");
-        adapter.addFragment(new TotalFragment(), "Total");
         adapter.addFragment(new NoteFragment(), "Note");
         viewPager.setAdapter(adapter);
 

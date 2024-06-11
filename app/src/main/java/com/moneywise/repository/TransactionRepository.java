@@ -10,11 +10,13 @@ import androidx.annotation.Nullable;
 import com.moneywise.constant.Constant;
 import com.moneywise.helper.DBHelper;
 import com.moneywise.model.BankModel;
+import com.moneywise.model.MonthlyTransactionModel;
 import com.moneywise.model.TransactionModel;
 import com.moneywise.model.UserModel;
 
 import java.text.ParseException;
 import java.sql.Date;
+import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +28,7 @@ public class TransactionRepository extends DBHelper implements ITransactionRepos
     }
 
     @Override
-    public TransactionModel getById(int userId, int transactionId) throws Exception {
+    public TransactionModel getById(int userId, int transactionId)  {
         TransactionModel transactionModel;
 
         String selectStatement = "SELECT " +
@@ -47,7 +49,7 @@ public class TransactionRepository extends DBHelper implements ITransactionRepos
                 "JOIN " +
                 "    banks b ON t.bank_id = b.id " +
                 "WHERE " +
-                "    t.id = 1";
+                "    t.id = " + transactionId;
 
         SQLiteDatabase db = this.getReadableDatabase();
 
@@ -66,7 +68,7 @@ public class TransactionRepository extends DBHelper implements ITransactionRepos
     }
 
     @Override
-    public List<TransactionModel> getAll(int userId, int limit) throws Exception {
+    public List<TransactionModel> getAll(int userId, int limit) {
         final ArrayList<TransactionModel> transactionModelArrayList = new ArrayList<>();
 
         String selectStatement = "SELECT " +
@@ -94,16 +96,49 @@ public class TransactionRepository extends DBHelper implements ITransactionRepos
 
         if(cursor.moveToFirst()) {
             do {
-                newTModelFromCursor(cursor);
+                transactionModelArrayList.add(newTModelFromCursor(cursor));
             } while (cursor.moveToNext());
-        } else {
-            cursor.close();
-            throw new Exception();
         }
 
         cursor.close();
 
         return transactionModelArrayList;
+    }
+
+    @Override
+    public List<MonthlyTransactionModel> getMonthlyByYear(int userId, int year) {
+        final ArrayList<MonthlyTransactionModel> models = new ArrayList<>();
+
+        String selectStatement = "SELECT " +
+                "    strftime('%Y/%m', t.createdAt) AS month," +
+                "    SUM(CASE WHEN t.label = 'label_income' THEN t.amount ELSE 0 END) AS total_income," +
+                "    SUM(CASE WHEN t.label = 'label_expense' THEN ABS(t.amount) ELSE 0 END) AS total_expense " +
+                "FROM " +
+                "   transactions t " +
+                "WHERE " +
+                "    strftime('%Y-%m', t.createdAt) >= '" + year + "-01' AND " +
+                "    strftime('%Y-%m', t.createdAt) <= '" + year + "-12' AND " +
+                "    user_id = '" + userId + "' " +
+                "GROUP BY " +
+                "    month";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery(selectStatement, null);
+
+        if(cursor.moveToFirst()) {
+            do {
+                models.add(new MonthlyTransactionModel(
+                        cursor.getString(0),
+                        cursor.getDouble(1),
+                        cursor.getDouble(2)
+                ));
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+
+        return models;
     }
 
     @Override
@@ -168,13 +203,13 @@ public class TransactionRepository extends DBHelper implements ITransactionRepos
         cv.put("user_id", model.getUser().getId());
         cv.put("bank_id", model.getBank().getId());
 
-        db.update(Constant.TABLE_NAME_TRANSACTION, cv, "id = " + model.getId(), null);
+        db.update(Constant.TABLE_NAME_TRANSACTION, cv, "user_id = " + model.getId(), null);
     }
 
     @Override
     public void delete(int userId, int id) {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(Constant.TABLE_NAME_TRANSACTION, "id = " + id, null);
+        db.delete(Constant.TABLE_NAME_TRANSACTION, "user_id = " + id, null);
     }
 
     @Override
@@ -182,7 +217,7 @@ public class TransactionRepository extends DBHelper implements ITransactionRepos
         SQLiteDatabase db = this.getReadableDatabase();
         String selectQuery = "SELECT SUM(amount) AS balance " +
                 "FROM " + Constant.TABLE_NAME_TRANSACTION + " " +
-                "WHERE id = " + userId;
+                "WHERE user_id = " + userId;
         Cursor cursor = db.rawQuery(selectQuery, null);
 
         double balance;
@@ -202,7 +237,7 @@ public class TransactionRepository extends DBHelper implements ITransactionRepos
         SQLiteDatabase db = this.getReadableDatabase();
         String selectQuery = "SELECT SUM(amount) AS balance " +
                 "FROM " + Constant.TABLE_NAME_TRANSACTION + " " +
-                "WHERE id = " + userId + " AND bank_id = " + bankId;
+                "WHERE user_id = " + userId + " AND bank_id = " + bankId;
         Cursor cursor = db.rawQuery(selectQuery, null);
 
         double balance;
@@ -222,7 +257,7 @@ public class TransactionRepository extends DBHelper implements ITransactionRepos
         SQLiteDatabase db = this.getReadableDatabase();
         String selectQuery = "SELECT SUM(amount) AS balance " +
                 "FROM " + Constant.TABLE_NAME_TRANSACTION + " " +
-                "WHERE id = " + userId + " AND label = " + Constant.LABEL_INCOME;
+                "WHERE user_id = " + userId + " AND label = '" + Constant.LABEL_INCOME + "'";
         Cursor cursor = db.rawQuery(selectQuery, null);
 
         double balance;
@@ -242,8 +277,8 @@ public class TransactionRepository extends DBHelper implements ITransactionRepos
         SQLiteDatabase db = this.getReadableDatabase();
         String selectQuery = "SELECT SUM(amount) AS balance " +
                 "FROM " + Constant.TABLE_NAME_TRANSACTION + " " +
-                "WHERE id = " + userId +
-                "   AND label = " + Constant.LABEL_INCOME +
+                "WHERE user_id = " + userId +
+                "   AND label = '" + Constant.LABEL_INCOME + "' " +
                 "   AND bank_id = " + bankId;
         Cursor cursor = db.rawQuery(selectQuery, null);
 
@@ -264,7 +299,7 @@ public class TransactionRepository extends DBHelper implements ITransactionRepos
         SQLiteDatabase db = this.getReadableDatabase();
         String selectQuery = "SELECT SUM(amount) AS balance " +
                 "FROM " + Constant.TABLE_NAME_TRANSACTION + " " +
-                "WHERE id = " + userId + " AND label = " + Constant.LABEL_EXPENSE;
+                "WHERE user_id = " + userId + " AND label = '" + Constant.LABEL_EXPENSE + "'";
         Cursor cursor = db.rawQuery(selectQuery, null);
 
         double balance;
@@ -284,8 +319,8 @@ public class TransactionRepository extends DBHelper implements ITransactionRepos
         SQLiteDatabase db = this.getReadableDatabase();
         String selectQuery = "SELECT SUM(amount) AS balance " +
                 "FROM " + Constant.TABLE_NAME_TRANSACTION + " " +
-                "WHERE id = " + userId +
-                "   AND label = " + Constant.LABEL_EXPENSE +
+                "WHERE user_id = " + userId +
+                "   AND label = '" + Constant.LABEL_EXPENSE + "'" +
                 "   AND bank_id = " + bankId;
         Cursor cursor = db.rawQuery(selectQuery, null);
 
@@ -306,8 +341,8 @@ public class TransactionRepository extends DBHelper implements ITransactionRepos
         SQLiteDatabase db = this.getReadableDatabase();
         String selectQuery = "SELECT SUM(amount) AS balance " +
                 "FROM " + Constant.TABLE_NAME_TRANSACTION + " " +
-                "WHERE id = " + userId +
-                "   AND label = " + Constant.LABEL_EXPENSE +
+                "WHERE user_id = " + userId +
+                "   AND label = '" + Constant.LABEL_EXPENSE + "'" +
                 "   AND createdAt = " + date.toString();
         Cursor cursor = db.rawQuery(selectQuery, null);
 
@@ -343,8 +378,8 @@ public class TransactionRepository extends DBHelper implements ITransactionRepos
         );
         bankModel = new BankModel(
                 cursor.getInt(8),
-                cursor.getString(9),
-                Date.valueOf(cursor.getString(9))
+                cursor.getString(9)
+//                Date.valueOf(cursor.getString(9))
         );
         return new TransactionModel(
                 cursor.getInt(0),

@@ -16,6 +16,19 @@ public class TransactionModel implements Parcelable, Serializable
     private UserModel user;
     private BankModel bank;
 
+    @Override
+    public String toString() {
+        return "TransactionModel{" +
+                "id=" + id +
+                ", label='" + label + '\'' +
+                ", amount=" + amount +
+                ", description='" + description + '\'' +
+                ", createdAt=" + createdAt +
+                ", user=" + user +
+                ", bank=" + bank +
+                '}';
+    }
+
     public TransactionModel(int id, String label, double amount, String description, Date createdAt, UserModel user, BankModel bank) {
         this.id = id;
         this.label = label;
