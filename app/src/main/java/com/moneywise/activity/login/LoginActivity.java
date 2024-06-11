@@ -3,6 +3,8 @@ package com.moneywise.activity.login;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -22,6 +24,13 @@ import com.moneywise.repository.IUserRepository;
 import com.moneywise.repository.UserRepository;
 
 public class LoginActivity extends AppCompatActivity {
+
+    private String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
+
+    private TextView txtSignUp;
+    private EditText etEmail;
+    private EditText etPassword;
+    private Button btnLogin;
 
     private final IUserRepository userRepository = new UserRepository(
             LoginActivity.this,
@@ -45,10 +54,10 @@ public class LoginActivity extends AppCompatActivity {
             return insets;
         });
 
-        TextView txtSignUp = findViewById(R.id.textSignUp);
-        EditText etEmail = findViewById(R.id.emailTextInputEditText);
-        EditText etPassword = findViewById(R.id.passwordTextInputEditText);
-        Button btnLogin = findViewById(R.id.btnLogin);
+        txtSignUp = findViewById(R.id.textSignUp);
+        etEmail = findViewById(R.id.emailTextInputEditText);
+        etPassword = findViewById(R.id.passwordTextInputEditText);
+        btnLogin = findViewById(R.id.btnLogin);
 
         txtSignUp.setOnClickListener(view -> {
             Intent intent = new Intent(LoginActivity.this, SignUpActivity.class);
@@ -56,10 +65,35 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         btnLogin.setOnClickListener(view -> {
-            try {
-                String email = etEmail.getText().toString();
-                String password = etPassword.getText().toString();
+            submitData();
+        });
 
+        etEmail.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void afterTextChanged(Editable editable) {
+                String email = etEmail.getText().toString().trim();
+                if (email.matches(emailPattern) && editable.length() > 0) {
+                    btnLogin.setEnabled(true);
+                } else {
+                    etEmail.setError("Invalid Email");
+                    btnLogin.setEnabled(false);
+                }
+            }
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+        });
+    }
+
+    private void submitData() {
+        try {
+            String email = etEmail.getText().toString();
+            String password = etPassword.getText().toString();
+
+            if (!(email.isEmpty() && password.isEmpty())) {
                 UserModel user = userRepository.getByEmailPassword(
                         email,
                         password
@@ -81,9 +115,16 @@ public class LoginActivity extends AppCompatActivity {
                 } else {
                     Toast.makeText(this, "Wrong email or password", Toast.LENGTH_SHORT).show();
                 }
-            } catch (Exception e) {
-                Toast.makeText(this, "Error occurred!", Toast.LENGTH_SHORT).show();
+            } else {
+                if (email.isEmpty()) {
+                    etEmail.setError("Must not empty!");
+                } if (password.isEmpty()) {
+                    etPassword.setError("Must not empty!");
+                }
             }
-        });
+
+        } catch (Exception e) {
+            Toast.makeText(this, "Error occurred!", Toast.LENGTH_SHORT).show();
+        }
     }
 }

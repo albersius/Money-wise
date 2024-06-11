@@ -21,6 +21,8 @@ import com.moneywise.repository.UserRepository;
 
 public class SignUpActivity extends AppCompatActivity {
 
+    private String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
+
     private final IUserRepository userRepository = new UserRepository(
             SignUpActivity.this,
             Constant.DB_NAME,
@@ -49,7 +51,7 @@ public class SignUpActivity extends AppCompatActivity {
         EditText etPassword2 = findViewById(R.id.passwordReg2TextInputEditText);
         Button btnSignUp = findViewById(R.id.btnSignUp);
 
-        String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
+
 
         btnSignUp.setEnabled(false);
 
