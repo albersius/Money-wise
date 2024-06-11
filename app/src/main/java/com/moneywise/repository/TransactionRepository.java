@@ -53,6 +53,7 @@ public class TransactionRepository extends DBHelper implements ITransactionRepos
                 "    users u ON t.user_id = u.id " +
                 "JOIN " +
                 "    banks b ON t.bank_id = b.id " +
+                "WHERE t.user_id = " + userId + " " +
                 "LIMIT " + limit;
 
         SQLiteDatabase db = this.getReadableDatabase();

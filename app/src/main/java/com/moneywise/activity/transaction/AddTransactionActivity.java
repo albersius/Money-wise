@@ -70,8 +70,6 @@ public class AddTransactionActivity extends AppCompatActivity {
 
         updateAccountData();
 
-
-
         submitBtn.setOnClickListener(v -> {
             submitData();
         });
@@ -107,8 +105,8 @@ public class AddTransactionActivity extends AppCompatActivity {
     private void updateAccountData() {
         bankNames = new ArrayList<>();
         bankNames.add("Add new account");
-        for (BankBalanceModel bank : bankRepository.getAllBankBalance(userId)) {
-            bankNames.add(bankRepository.getById(bank.getId()).getName());
+        for (BankBalanceModel bankBalanceModel : bankRepository.getAllBankBalance(userId)) {
+            bankNames.add(bankRepository.getById(bankBalanceModel.getBank().getId()).getName());
         }
         adapter = new ArrayAdapter(this, R.layout.dropdown_item, bankNames);
         autoCompleteTextView.setAdapter(adapter);
