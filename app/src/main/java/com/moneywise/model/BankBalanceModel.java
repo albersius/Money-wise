@@ -13,6 +13,30 @@ public class BankBalanceModel implements Serializable, Parcelable {
     private BankModel bank;
     private double balance;
 
+    public int getId() {
+        return id;
+    }
+
+    public UserModel getUser() {
+        return user;
+    }
+
+    public void subtractBal(double balance) {
+        this.balance -= balance;
+    }
+
+    public void addBal(double balance) {
+        this.balance += balance;
+    }
+
+    public BankModel getBank() {
+        return bank;
+    }
+
+    public double getBalance() {
+        return balance;
+    }
+
     public BankBalanceModel(int id, UserModel user, BankModel bank, double balance) {
         this.id = id;
         this.user = user;

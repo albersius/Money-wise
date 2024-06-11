@@ -1,60 +1,61 @@
 package com.moneywise.activity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.moneywise.R;
+import com.moneywise.activity.transaction.DailyFragment;
+import com.moneywise.activity.transaction.MonthlyFragment;
+import com.moneywise.activity.transaction.NoteFragment;
+import com.moneywise.adapter.AccountRVAdapter;
+import com.moneywise.adapter.TransactionVPAdapter;
+import com.moneywise.constant.Constant;
+import com.moneywise.model.BankBalanceModel;
+import com.moneywise.repository.BankRepository;
+import com.moneywise.repository.IBankRepository;
+import com.moneywise.repository.ITransactionRepository;
+import com.moneywise.repository.TransactionRepository;
+import com.moneywise.util.Util;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link AccountFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import java.util.List;
+
 public class AccountFragment extends Fragment {
+    private IBankRepository bankRepository;
+    private ITransactionRepository transactionRepository;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public AccountFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment AccountFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static AccountFragment newInstance(String param1, String param2) {
-        AccountFragment fragment = new AccountFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    private ImageView btnAddAccount;
+    private RecyclerView recyclerView;
+    private AccountRVAdapter adapter;
+    private TextView tvTotalLiabilities;
+    private TextView tvTotalAssets;
+    private int userId;
+    private List<BankBalanceModel> datas;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        bankRepository = new BankRepository(context, Constant.DB_NAME, null, Constant.VERSION);
+        transactionRepository = new TransactionRepository(context, Constant.DB_NAME, null, Constant.VERSION);
     }
 
     @Override
@@ -63,4 +64,39 @@ public class AccountFragment extends Fragment {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_account, container, false);
     }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        btnAddAccount = view.findViewById(R.id.addAccountBtn);
+        recyclerView = view.findViewById(R.id.rv_account);
+        tvTotalLiabilities = view.findViewById(R.id.txtTotalLiabilities);
+        tvTotalAssets = view.findViewById(R.id.txtTotalAll);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setHasFixedSize(true);
+
+        userId = Util.getCurrentUserId(getActivity());
+
+        updateDashboard();
+
+        tvTotalAssets.setText(String.format("Rp. %.2f", bankRepository.getTotalBalance(userId)));
+        tvTotalLiabilities.setText(String.format("Rp. %.2f", transactionRepository.getTotalNote(userId)));
+
+        btnAddAccount.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), AddAccountActivity.class);
+            startActivityIntent.launch(intent);
+        });
+    }
+
+    ActivityResultLauncher<Intent> startActivityIntent = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            o -> updateDashboard()
+    );
+
+    private void updateDashboard() {
+        datas = bankRepository.getAllBankBalance(userId);
+        adapter = new AccountRVAdapter(getActivity(), datas);
+        recyclerView.setAdapter(adapter);
+    }
+
 }

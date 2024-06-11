@@ -13,6 +13,9 @@
         android:theme="@style/Theme.MoneyWise"
         tools:targetApi="31">
         <activity
+            android:name=".activity.AddAccountActivity"
+            android:exported="false" />
+        <activity
             android:name=".activity.transaction.AddBankActivity"
             android:exported="false" />
         <activity

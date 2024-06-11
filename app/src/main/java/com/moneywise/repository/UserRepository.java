@@ -19,6 +19,29 @@ public class UserRepository extends DBHelper implements IUserRepository {
     }
 
     @Override
+    public UserModel getById(int id) {
+        UserModel model;
+        String selectStatement = "SELECT * FROM " +
+                Constant.TABLE_NAME_USER +
+                " WHERE id = " + id;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectStatement, null);
+
+        if(cursor.moveToFirst()) {
+            int selectedId = cursor.getInt(0);
+            String selectedEmail = cursor.getString(1);
+            model = new UserModel(selectedId, selectedEmail);
+        } else {
+            model = null;
+        }
+
+        cursor.close();
+
+        return model;
+    }
+
+    @Override
     public boolean isExistByEmail(String email) {
         String selectStatement = "SELECT * FROM " +
                 Constant.TABLE_NAME_USER + " WHERE email = '" + email + "'";

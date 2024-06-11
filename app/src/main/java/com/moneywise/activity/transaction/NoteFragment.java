@@ -85,7 +85,6 @@ public class NoteFragment extends Fragment {
     private void updateDashboard() {
         tvTotalNote.setText(String.format("Rp %.2f", transactionRepository.getTotalNote(userId)));
         data = transactionRepository.getAllNote(userId, -1);
-        Log.i("KAMPRET", data.toString());
         adapter = new TransactionNoteRVAdapter(getContext(), data);
         recyclerView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
