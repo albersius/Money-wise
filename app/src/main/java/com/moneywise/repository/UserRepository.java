@@ -71,7 +71,6 @@ public class UserRepository extends DBHelper implements IUserRepository {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
         cv.put("email", model.getEmail());
-        cv.put("password", model.getPassword());
         long success = db.update(Constant.TABLE_NAME_USER, cv, "id = " + id, null);
         return false;
     }
