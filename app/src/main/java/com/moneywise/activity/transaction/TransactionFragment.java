@@ -1,4 +1,4 @@
-package com.moneywise.activity;
+package com.moneywise.activity.transaction;
 
 import android.os.Bundle;
 

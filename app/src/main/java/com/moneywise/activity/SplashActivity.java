@@ -9,6 +9,7 @@ import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.moneywise.R;
+import com.moneywise.activity.login.LoginActivity;
 import com.moneywise.util.Util;
 
 @SuppressLint("CustomSplashScreen")

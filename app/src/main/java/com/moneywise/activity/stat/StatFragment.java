@@ -1,4 +1,4 @@
-package com.moneywise.activity;
+package com.moneywise.activity.stat;
 
 import android.content.Context;
 import android.os.Bundle;

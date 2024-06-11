@@ -19,7 +19,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.moneywise.R;
-import com.moneywise.activity.AddAccountActivity;
+import com.moneywise.activity.account.AddAccountActivity;
 import com.moneywise.constant.Constant;
 import com.moneywise.model.BankBalanceModel;
 import com.moneywise.model.BankModel;

@@ -1,4 +1,4 @@
-package com.moneywise.activity;
+package com.moneywise.activity.account;
 
 import android.content.Intent;
 import android.os.Bundle;

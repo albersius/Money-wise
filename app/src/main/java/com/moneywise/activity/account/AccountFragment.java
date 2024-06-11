@@ -1,4 +1,4 @@
-package com.moneywise.activity;
+package com.moneywise.activity.account;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -20,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.moneywise.R;
+import com.moneywise.activity.account.AddAccountActivity;
 import com.moneywise.adapter.AccountRVAdapter;
 import com.moneywise.constant.Constant;
 import com.moneywise.model.BankBalanceModel;

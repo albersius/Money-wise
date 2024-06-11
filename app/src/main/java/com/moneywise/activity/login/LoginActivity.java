@@ -1,4 +1,4 @@
-package com.moneywise.activity;
+package com.moneywise.activity.login;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -15,6 +15,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.moneywise.R;
+import com.moneywise.activity.MainActivity;
 import com.moneywise.constant.Constant;
 import com.moneywise.model.UserModel;
 import com.moneywise.repository.IUserRepository;

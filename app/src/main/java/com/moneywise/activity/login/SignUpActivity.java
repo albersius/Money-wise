@@ -1,4 +1,4 @@
-package com.moneywise.activity;
+package com.moneywise.activity.login;
 
 import android.os.Bundle;
 import android.text.Editable;

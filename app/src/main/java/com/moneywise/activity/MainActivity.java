@@ -12,6 +12,10 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.moneywise.R;
+import com.moneywise.activity.account.AccountFragment;
+import com.moneywise.activity.more.MoreFragment;
+import com.moneywise.activity.stat.StatFragment;
+import com.moneywise.activity.transaction.TransactionFragment;
 import com.moneywise.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
