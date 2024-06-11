@@ -27,6 +27,9 @@ public class BankRepository extends DBHelper implements IBankRepository {
     public BankModel getById(int id) {
         BankModel bankModel;
 
+        // Query ini mengambil semua data dari tabel 'Constant.TABLE_NAME_BANK' untuk bank tertentu berdasarkan ID.
+        // Query ini menggunakan klausa WHERE untuk memfilter hasil berdasarkan nilai 'id' yang diberikan.
+        // Hasil query ini akan mengembalikan semua kolom dari tabel untuk bank dengan ID yang sesuai.
         String selectQuery = "SELECT * " +
                 "FROM " + Constant.TABLE_NAME_BANK + " " +
                 "WHERE id = " + id;
@@ -54,6 +57,8 @@ public class BankRepository extends DBHelper implements IBankRepository {
     public List<BankModel> getAll(int limit) {
         final ArrayList<BankModel> bankModel = new ArrayList<>();
 
+        // Query ini mengambil semua data dari tabel 'Constant.TABLE_NAME_BANK' dengan batasan jumlah hasil yang dikembalikan oleh 'LIMIT'.
+        // Hasil query ini akan mengembalikan semua kolom dari tabel bank, namun dibatasi dengan jumlah maksimum yang ditentukan oleh variabel 'limit'.
         String selectQuery = "SELECT * " +
                 "FROM " + Constant.TABLE_NAME_BANK + " " +
                 "LIMIT " + limit;
@@ -80,14 +85,16 @@ public class BankRepository extends DBHelper implements IBankRepository {
     @Override
     public boolean createAccount(int userId, int bankId, double initialBalance) {
         SQLiteDatabase db = this.getWritableDatabase();
+        // Membuat objek ContentValues untuk menyimpan pasangan kunci-nilai yang akan digunakan untuk memasukkan data ke dalam database.
         ContentValues cv = new ContentValues();
-//        "user_id INT NOT NULL, " +
-//        "bank_id INT NOT NULL, " +
-//        "balance REAL NOT NULL DEFAULT 0, " +
-//        "createdAt DATE DEFAULT CURRENT_DATE," +
-//        "updatedAt DATE," +
+
+        // Menambahkan nilai untuk kolom 'user_id' dengan menggunakan nilai dari variabel 'userId'.
         cv.put("user_id", userId);
+
+        // Menambahkan nilai untuk kolom 'bank_id' dengan menggunakan nilai dari variabel 'bankId'.
         cv.put("bank_id", bankId);
+
+        // Menambahkan nilai untuk kolom 'balance' dengan menggunakan nilai dari variabel 'initialBalance'.
         cv.put("balance", initialBalance);
 
         long success = db.insert(Constant.TABLE_NAME_BANK_BALANCE, null, cv);
@@ -101,6 +108,9 @@ public class BankRepository extends DBHelper implements IBankRepository {
     public List<BankBalanceModel> getAllBankBalance(int userId) {
         final ArrayList<BankBalanceModel> bankModel = new ArrayList<>();
 
+        // Query ini mengambil semua data dari tabel 'Constant.TABLE_NAME_BANK_BALANCE' untuk saldo bank tertentu berdasarkan user_id.
+        // Query ini menggunakan klausa WHERE untuk memfilter hasil berdasarkan nilai 'user_id' yang diberikan.
+        // Hasil query ini akan mengembalikan semua kolom dari tabel saldo bank untuk pengguna dengan user_id yang sesuai.
         String selectQuery = "SELECT * " +
                 "FROM " + Constant.TABLE_NAME_BANK_BALANCE + " " +
                 "WHERE user_id = " + userId;
@@ -130,6 +140,9 @@ public class BankRepository extends DBHelper implements IBankRepository {
     public double getTotalBalance(int userId) {
         double balance = 0;
 
+        // Query ini menghitung total saldo (balance) dari semua catatan saldo bank untuk pengguna tertentu berdasarkan user_id.
+        // Query ini menggunakan fungsi SUM untuk menjumlahkan semua nilai kolom 'balance'.
+        // Hasil query ini akan mengembalikan jumlah total saldo dari semua catatan saldo bank untuk pengguna dengan user_id yang sesuai.
         String selectQuery = "SELECT SUM(balance) " +
                 "FROM " + Constant.TABLE_NAME_BANK_BALANCE + " " +
                 "WHERE user_id = " + userId;
@@ -152,6 +165,9 @@ public class BankRepository extends DBHelper implements IBankRepository {
     public BankBalanceModel getBankBalanceByBankId(int userId, int bankId) {
         final BankBalanceModel bankModel;
 
+        // Query ini mengambil semua data dari tabel 'Constant.TABLE_NAME_BANK_BALANCE' untuk saldo bank tertentu berdasarkan user_id dan bank_id.
+        // Query ini menggunakan klausa WHERE untuk memfilter hasil berdasarkan nilai 'user_id' dan 'bank_id' yang diberikan.
+        // Hasil query ini akan mengembalikan semua kolom dari tabel saldo bank untuk pengguna dengan user_id dan bank_id yang sesuai.
         String selectQuery = "SELECT * " +
                 "FROM " + Constant.TABLE_NAME_BANK_BALANCE + " " +
                 "WHERE user_id = " + userId + " " +
@@ -181,6 +197,9 @@ public class BankRepository extends DBHelper implements IBankRepository {
     public BankModel getByName(String name) {
         BankModel bankModel;
 
+        // Query ini mengambil semua data dari tabel 'Constant.TABLE_NAME_BANK' untuk bank tertentu berdasarkan nama bank.
+        // Query ini menggunakan klausa WHERE untuk memfilter hasil berdasarkan nilai 'name' yang diberikan.
+        // Hasil query ini akan mengembalikan semua kolom dari tabel bank untuk bank dengan nama yang sesuai.
         String selectQuery = "SELECT * " +
                 "FROM " + Constant.TABLE_NAME_BANK + " " +
                 "WHERE name = '" + name + "'";
@@ -207,7 +226,11 @@ public class BankRepository extends DBHelper implements IBankRepository {
     @Override
     public boolean create(String name) {
         SQLiteDatabase db = this.getWritableDatabase();
+
+        // Membuat objek ContentValues untuk menyimpan pasangan kunci-nilai yang akan digunakan untuk memperbarui atau menyisipkan data ke dalam database.
         ContentValues cv = new ContentValues();
+
+        // Menambahkan nilai untuk kolom 'name' dengan menggunakan nilai dari variabel 'name'.
         cv.put("name", name);
 
         long success = db.insert(Constant.TABLE_NAME_BANK, null, cv);
@@ -220,7 +243,11 @@ public class BankRepository extends DBHelper implements IBankRepository {
     @Override
     public boolean updateBalance(BankBalanceModel balanceModel) {
         SQLiteDatabase db = this.getWritableDatabase();
+
+        // Membuat objek ContentValues untuk menyimpan pasangan kunci-nilai yang akan digunakan untuk memperbarui atau menyisipkan data ke dalam database.
         ContentValues cv = new ContentValues();
+
+        // Menambahkan nilai untuk kolom 'balance' dengan menggunakan nilai dari objek BalanceModel yang dimasukkan.
         cv.put("balance", balanceModel.getBalance());
 
         int success = db.update(Constant.TABLE_NAME_BANK_BALANCE, cv, "id = " + balanceModel.getId(), null);

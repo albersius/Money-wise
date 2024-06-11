@@ -19,6 +19,10 @@ public class UserRepository extends DBHelper implements IUserRepository {
     @Override
     public UserModel getById(int id) {
         UserModel model;
+
+        // Query ini mengambil semua data dari tabel 'Constant.TABLE_NAME_USER' untuk pengguna tertentu berdasarkan ID.
+        // Query ini menggunakan klausa WHERE untuk memfilter hasil berdasarkan nilai 'id' yang diberikan.
+        // Hasil query ini akan mengembalikan semua kolom dari tabel untuk pengguna dengan ID yang sesuai.
         String selectStatement = "SELECT * FROM " +
                 Constant.TABLE_NAME_USER +
                 " WHERE id = " + id;
@@ -41,6 +45,9 @@ public class UserRepository extends DBHelper implements IUserRepository {
 
     @Override
     public boolean isExistByEmail(String email) {
+        // Query ini mengambil semua data dari tabel 'Constant.TABLE_NAME_USER' untuk pengguna tertentu berdasarkan email.
+        // Query ini menggunakan klausa WHERE untuk memfilter hasil berdasarkan nilai 'email' yang diberikan.
+        // Hasil query ini akan mengembalikan semua kolom dari tabel untuk pengguna dengan email yang sesuai.
         String selectStatement = "SELECT * FROM " +
                 Constant.TABLE_NAME_USER + " WHERE email = '" + email + "'";
         SQLiteDatabase db = this.getReadableDatabase();
@@ -57,6 +64,10 @@ public class UserRepository extends DBHelper implements IUserRepository {
     @Override
     public UserModel getByEmailPassword(String email, String password) throws Exception {
         UserModel model;
+
+        // Query ini mengambil semua data dari tabel 'Constant.TABLE_NAME_USER' untuk pengguna tertentu berdasarkan email dan password.
+        // Query ini menggunakan klausa WHERE untuk memfilter hasil berdasarkan nilai 'email' dan 'password' yang diberikan.
+        // Hasil query ini akan mengembalikan semua kolom dari tabel untuk pengguna dengan email dan password yang sesuai.
         String selectStatement = "SELECT * FROM " +
                 Constant.TABLE_NAME_USER +
                 " WHERE email = '" + email + "' AND password = '" + password + "'";
@@ -80,8 +91,13 @@ public class UserRepository extends DBHelper implements IUserRepository {
     @Override
     public boolean create(String email, String password) {
         SQLiteDatabase db = this.getWritableDatabase();
+        // Membuat objek ContentValues untuk menyimpan pasangan kunci-nilai yang akan digunakan untuk memperbarui atau menyisipkan data ke dalam database.
         ContentValues cv = new ContentValues();
+
+        // Menambahkan nilai untuk kolom 'email' dengan menggunakan nilai dari variabel 'email'.
         cv.put("email", email);
+
+        // Menambahkan nilai untuk kolom 'password' dengan menggunakan nilai dari variabel 'password'.
         cv.put("password", password);
         long success = db.insert(Constant.TABLE_NAME_USER, null, cv);
         return success != -1;

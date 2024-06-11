@@ -29,6 +29,13 @@ public class TransactionRepository extends DBHelper implements ITransactionRepos
     public List<TransactionModel> getAll(int userId, int limit) {
         final ArrayList<TransactionModel> transactionModelArrayList = new ArrayList<>();
 
+        // Query ini mengambil data transaksi, pengguna, dan bank terkait dari tabel transactions, users, dan banks.
+        // Kolom yang diambil dari tabel transactions adalah id, label, amount, description, dan createdAt.
+        // Kolom yang diambil dari tabel users adalah id, email, dan createdAt.
+        // Kolom yang diambil dari tabel banks adalah id dan name.
+        // Query ini menggunakan JOIN untuk menghubungkan tabel transactions dengan users berdasarkan user_id,
+        // serta menghubungkan tabel transactions dengan banks berdasarkan bank_id.
+        // Data yang dihasilkan dibatasi dengan jumlah yang ditentukan oleh variabel 'limit'.
         String selectStatement = "SELECT " +
                 "    t.id AS transaction_id," +
                 "    t.label AS transaction_label," +
@@ -67,6 +74,7 @@ public class TransactionRepository extends DBHelper implements ITransactionRepos
     public List<TransactionModel> getAllNote(int userId, int limit) {
         final ArrayList<TransactionModel> transactionModelArrayList = new ArrayList<>();
 
+        // query ini akan mengambil semua data note
         String selectStatement = "SELECT " +
                 "    t.id AS transaction_id," +
                 "    t.label AS transaction_label," +
@@ -106,6 +114,11 @@ public class TransactionRepository extends DBHelper implements ITransactionRepos
     public List<MonthlyTransactionModel> getMonthlyByYear(int userId, int year) {
         final ArrayList<MonthlyTransactionModel> models = new ArrayList<>();
 
+        // Query ini mengambil data total pemasukan (income) dan pengeluaran (expense) per bulan untuk pengguna tertentu pada tahun tertentu.
+        // Query menggunakan fungsi strftime untuk memformat kolom createdAt menjadi format 'YYYY/MM' untuk grouping dan 'YYYY-MM' untuk filtering.
+        // Query menjumlahkan nilai amount dengan kondisi label 'label_income' sebagai total_income dan label 'label_expense' sebagai total_expense.
+        // Data difilter berdasarkan tahun tertentu dan user_id tertentu, kemudian dikelompokkan per bulan.
+        // Parameter yang digunakan adalah 'year' untuk tahun, dan 'userId' untuk ID pengguna.
         String selectStatement = "SELECT " +
                 "    strftime('%Y/%m', t.createdAt) AS month," +
                 "    SUM(CASE WHEN t.label = 'label_income' THEN t.amount ELSE 0 END) AS total_income," +
@@ -141,11 +154,22 @@ public class TransactionRepository extends DBHelper implements ITransactionRepos
     @Override
     public boolean create(int userId, String label, double amount, String description, int bankId) {
         SQLiteDatabase db = this.getWritableDatabase();
+        // Membuat objek ContentValues untuk menyimpan pasangan kunci-nilai yang akan digunakan untuk memasukkan data ke dalam database.
         ContentValues cv = new ContentValues();
+
+        // Menambahkan nilai untuk kolom 'label' dengan menggunakan nilai dari variabel 'label'.
         cv.put("label", label);
+
+        // Menambahkan nilai untuk kolom 'amount' dengan menggunakan nilai dari variabel 'amount'.
         cv.put("amount", amount);
+
+        // Menambahkan nilai untuk kolom 'description' dengan menggunakan nilai dari variabel 'description'.
         cv.put("description", description);
+
+        // Menambahkan nilai untuk kolom 'user_id' dengan menggunakan nilai dari variabel 'userId'.
         cv.put("user_id", userId);
+
+        // Menambahkan nilai untuk kolom 'bank_id' dengan menggunakan nilai dari variabel 'bankId'.
         cv.put("bank_id", bankId);
 
         long success = db.insert(Constant.TABLE_NAME_TRANSACTION, null, cv);
@@ -155,6 +179,11 @@ public class TransactionRepository extends DBHelper implements ITransactionRepos
     @Override
     public double getTotalNote(int userId) {
         SQLiteDatabase db = this.getReadableDatabase();
+
+        // Query ini menghitung total saldo (balance) untuk pengguna tertentu berdasarkan label 'note'.
+        // Query menjumlahkan nilai amount hanya jika label transaksi adalah 'Constant.LABEL_NOTE'.
+        // Hasilnya akan disimpan dalam alias 'balance'.
+        // Query ini mengambil data dari tabel 'Constant.TABLE_NAME_TRANSACTION' dan memfilter berdasarkan user_id tertentu.
         String selectQuery = "SELECT " +
                 "SUM(CASE WHEN label = '"+ Constant.LABEL_NOTE +"' THEN amount ELSE 0 END) " +
                 "AS balance " +
@@ -177,6 +206,12 @@ public class TransactionRepository extends DBHelper implements ITransactionRepos
     @Override
     public double getBalance(int userId) {
         SQLiteDatabase db = this.getReadableDatabase();
+
+        // Query ini menghitung saldo (balance) untuk pengguna tertentu dengan mengurangkan total pengeluaran (expense) dari total pemasukan (income).
+        // Query menjumlahkan nilai amount untuk transaksi dengan label 'Constant.LABEL_INCOME' sebagai total pemasukan.
+        // Query menjumlahkan nilai amount untuk transaksi dengan label 'Constant.LABEL_EXPENSE' sebagai total pengeluaran.
+        // Hasil pengurangan total pemasukan dengan total pengeluaran disimpan dalam alias 'balance'.
+        // Query ini mengambil data dari tabel 'Constant.TABLE_NAME_TRANSACTION' dan memfilter berdasarkan user_id tertentu.
         String selectQuery = "SELECT " +
                 "(SUM(CASE WHEN label = '"+ Constant.LABEL_INCOME +"' THEN amount ELSE 0 END) - " +
                 "SUM(CASE WHEN label = '" + Constant.LABEL_EXPENSE + "' THEN amount ELSE 0 END)) " +
@@ -200,6 +235,11 @@ public class TransactionRepository extends DBHelper implements ITransactionRepos
     @Override
     public double getIncome(int userId) {
         SQLiteDatabase db = this.getReadableDatabase();
+
+        // Query ini menghitung total saldo (balance) dari semua pemasukan (income) untuk pengguna tertentu.
+        // Query menjumlahkan nilai amount dari transaksi yang memiliki label 'Constant.LABEL_INCOME'.
+        // Hasilnya disimpan dalam alias 'balance'.
+        // Query ini mengambil data dari tabel 'Constant.TABLE_NAME_TRANSACTION' dan memfilter berdasarkan user_id dan label income.
         String selectQuery = "SELECT SUM(amount) AS balance " +
                 "FROM " + Constant.TABLE_NAME_TRANSACTION + " " +
                 "WHERE user_id = " + userId + " AND label = '" + Constant.LABEL_INCOME + "'";
@@ -220,6 +260,11 @@ public class TransactionRepository extends DBHelper implements ITransactionRepos
     @Override
     public double getExpense(int userId) {
         SQLiteDatabase db = this.getReadableDatabase();
+
+        // Query ini menghitung total saldo (balance) dari semua pengeluaran (expense) untuk pengguna tertentu.
+        // Query menjumlahkan nilai amount dari transaksi yang memiliki label 'Constant.LABEL_EXPENSE'.
+        // Hasilnya disimpan dalam alias 'balance'.
+        // Query ini mengambil data dari tabel 'Constant.TABLE_NAME_TRANSACTION' dan memfilter berdasarkan user_id dan label expense.
         String selectQuery = "SELECT SUM(amount) AS balance " +
                 "FROM " + Constant.TABLE_NAME_TRANSACTION + " " +
                 "WHERE user_id = " + userId + " AND label = '" + Constant.LABEL_EXPENSE + "'";
@@ -237,6 +282,7 @@ public class TransactionRepository extends DBHelper implements ITransactionRepos
         return balance;
     }
 
+    // sebuah method untuk mengubah cursor menjadi model transaksi
     private TransactionModel newTModelFromCursor(Cursor cursor) {
         //            transaction_id	0
         //            transaction_label	1
@@ -258,7 +304,6 @@ public class TransactionRepository extends DBHelper implements ITransactionRepos
         bankModel = new BankModel(
                 cursor.getInt(8),
                 cursor.getString(9)
-//                Date.valueOf(cursor.getString(9))
         );
         return new TransactionModel(
                 cursor.getInt(0),
